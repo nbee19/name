@@ -3,547 +3,686 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nirrva Pro - Ultimate Name Generator</title>
+    <title>VideoEarn App - Mockup</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        .phone-mockup {
+            width: 375px;
+            height: 812px;
+            border-radius: 40px;
+            border: 12px solid #222;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+            background: #fff;
+        }
         
-        * {
-            font-family: 'Inter', sans-serif;
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #222;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
         }
         
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
         
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .dark .glass-effect {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .name-card {
+        .card-hover {
             transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 12px;
+            color: #6b7280;
             cursor: pointer;
+            transition: color 0.2s;
         }
         
-        .name-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        .nav-item.active {
+            color: #667eea;
         }
         
-        .category-btn {
-            transition: all 0.3s ease;
-        }
-        
-        .category-btn.active {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: scale(1.05);
-        }
-        
-        .floating {
-            animation: floating 3s ease-in-out infinite;
-        }
-        
-        @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.7; }
-            100% { opacity: 1; }
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.5);
-            border-radius: 4px;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.8);
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
         }
     </style>
 </head>
-<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-    <!-- Header -->
-    <header class="gradient-bg text-white shadow-lg">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-magic text-3xl floating"></i>
-                    <h1 class="text-3xl font-bold">Nirrva Pro</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button id="themeToggle" class="p-2 rounded-lg glass-effect hover:bg-white/20 transition-all">
-                        <i class="fas fa-moon text-xl"></i>
-                    </button>
-                    <button id="favoritesBtn" class="p-2 rounded-lg glass-effect hover:bg-white/20 transition-all relative">
-                        <i class="fas fa-heart text-xl"></i>
-                        <span id="favCount" class="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8">
-        <!-- Category Selection -->
-        <section class="mb-8">
-            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Choose Your Style</h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button class="category-btn active p-4 rounded-xl bg-white dark:bg-gray-800 shadow-md hover:shadow-lg" data-category="gaming">
-                    <i class="fas fa-gamepad text-2xl mb-2 text-purple-600"></i>
-                    <p class="font-medium">Gaming</p>
-                </button>
-                <button class="category-btn p-4 rounded-xl bg-white dark:bg-gray-800 shadow-md hover:shadow-lg" data-category="social">
-                    <i class="fas fa-share-alt text-2xl mb-2 text-blue-600"></i>
-                    <p class="font-medium">Social Media</p>
-                </button>
-                <button class="category-btn p-4 rounded-xl bg-white dark:bg-gray-800 shadow-md hover:shadow-lg" data-category="brand">
-                    <i class="fas fa-trademark text-2xl mb-2 text-green-600"></i>
-                    <p class="font-medium">Brand</p>
-                </button>
-                <button class="category-btn p-4 rounded-xl bg-white dark:bg-gray-800 shadow-md hover:shadow-lg" data-category="fantasy">
-                    <i class="fas fa-dragon text-2xl mb-2 text-red-600"></i>
-                    <p class="font-medium">Fantasy</p>
-                </button>
-            </div>
-        </section>
-
-        <!-- Customization Options -->
-        <section class="mb-8 glass-effect rounded-2xl p-6">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Customize Your Name</h3>
-            <div class="grid md:grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Prefix</label>
-                    <input type="text" id="prefixInput" placeholder="e.g., Mr, Dr, The" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Base Word</label>
-                    <input type="text" id="baseInput" placeholder="e.g., Shadow, Fire, Storm" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Suffix</label>
-                    <input type="text" id="suffixInput" placeholder="e.g., Pro, X, Master" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                </div>
-            </div>
-            <div class="mt-4 flex flex-wrap gap-2">
-                <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" id="useSymbols" class="rounded text-purple-600 focus:ring-purple-500">
-                    <span class="text-sm text-gray-700 dark:text-gray-300">Use Symbols</span>
-                </label>
-                <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" id="useNumbers" class="rounded text-purple-600 focus:ring-purple-500">
-                    <span class="text-sm text-gray-700 dark:text-gray-300">Include Numbers</span>
-                </label>
-                <label class="flex items-center space-x-2 cursor-pointer">
-                    <input type="checkbox" id="capitalize" class="rounded text-purple-600 focus:ring-purple-500">
-                    <span class="text-sm text-gray-700 dark:text-gray-300">Capitalize</span>
-                </label>
-            </div>
-        </section>
-
-        <!-- Generate Button -->
-        <div class="text-center mb-8">
-            <button id="generateBtn" class="gradient-bg text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 pulse">
-                <i class="fas fa-sparkles mr-2"></i>
-                Generate Names
-            </button>
-        </div>
-
-        <!-- Generated Names -->
-        <section>
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Generated Names</h3>
-                <button id="clearAllBtn" class="text-sm text-red-600 hover:text-red-700 transition-colors">
-                    <i class="fas fa-trash mr-1"></i>Clear All
-                </button>
-            </div>
-            <div id="namesContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-96 overflow-y-auto custom-scrollbar">
-                <!-- Names will be generated here -->
-            </div>
-        </section>
-
-        <!-- Favorites Modal -->
-        <div id="favoritesModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
-            <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-2xl w-full max-h-96 overflow-y-auto">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-2xl font-semibold text-gray-800 dark:text-white">Favorite Names</h3>
-                    <button id="closeFavorites" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                        <i class="fas fa-times text-xl"></i>
-                    </button>
-                </div>
-                <div id="favoritesContainer" class="space-y-2">
-                    <!-- Favorites will be displayed here -->
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-full transition-transform duration-300 z-50">
-        <i class="fas fa-check-circle mr-2"></i>
-        <span id="toastMessage">Name copied to clipboard!</span>
-    </div>
-
-    <script>
-        // Name generation data
-        const nameData = {
-            gaming: {
-                prefixes: ['Pro', 'Elite', 'Master', 'Shadow', 'Cyber', 'Neon', 'Phantom', 'Stealth', 'Chaos', 'Void'],
-                bases: ['Warrior', 'Sniper', 'Ninja', 'Dragon', 'Phoenix', 'Titan', 'Hunter', 'Assassin', 'Legend', 'Mythic'],
-                suffixes: ['X', 'Pro', 'Elite', 'King', 'Lord', 'Master', 'God', 'One', 'Zero', 'Prime'],
-                symbols: ['_', '-', '.', 'x', 'X']
-            },
-            social: {
-                prefixes: ['The', 'Real', 'Official', 'Just', 'Daily', 'Life', 'My', 'Your', 'This', 'That'],
-                bases: ['Adventure', 'Journey', 'Story', 'Life', 'World', 'Dream', 'Vision', 'Path', 'Quest', 'Tale'],
-                suffixes: ['Hub', 'Spot', 'Zone', 'Place', 'Space', 'Corner', 'Area', 'Den', 'Nest', 'Home'],
-                symbols: ['_', '-', '.', '•', '✓']
-            },
-            brand: {
-                prefixes: ['Next', 'Prime', 'Ultra', 'Max', 'Super', 'Mega', 'Hyper', 'Top', 'Best', 'Elite'],
-                bases: ['Tech', 'Labs', 'Works', 'Studio', 'Digital', 'Smart', 'Future', 'Innovate', 'Create', 'Build'],
-                suffixes: ['Co', 'Inc', 'Ltd', 'Group', 'Corp', 'Solutions', 'Systems', 'Network', 'Hub', 'Plus'],
-                symbols: ['', ' ', '-', '&', '+']
-            },
-            fantasy: {
-                prefixes: ['Lord', 'Lady', 'Sir', 'Dame', 'The', 'Great', 'Ancient', 'Eternal', 'Mystic', 'Divine'],
-                bases: ['Dragon', 'Phoenix', 'Griffin', 'Unicorn', 'Wizard', 'Sorcerer', 'Knight', 'Paladin', 'Ranger', 'Mage'],
-                suffixes: ['The Brave', 'The Wise', 'The Bold', 'The Mighty', 'The Fearless', 'The Great', 'The Eternal', 'The Divine', 'The Mystic', 'The Ancient'],
-                symbols: ['', ' ', '•', '✦', '❖']
-            }
-        };
-
-        let currentCategory = 'gaming';
-        let favorites = JSON.parse(localStorage.getItem('favoriteNames')) || [];
-
-        // Theme toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const html = document.documentElement;
+<body class="bg-gray-100 p-8">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-4xl font-bold text-center mb-2 text-gray-800">VideoEarn App Mockup</h1>
+        <p class="text-center text-gray-600 mb-10">Earn money by watching videos - Mobile App Design</p>
         
-        themeToggle.addEventListener('click', () => {
-            html.classList.toggle('dark');
-            const icon = themeToggle.querySelector('i');
-            icon.classList.toggle('fa-moon');
-            icon.classList.toggle('fa-sun');
-        });
-
-        // Category selection
-        document.querySelectorAll('.category-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentCategory = btn.dataset.category;
-                generateNames();
-            });
-        });
-
-        // Generate names
-        function generateNames() {
-            const container = document.getElementById('namesContainer');
-            container.innerHTML = '';
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            const prefixInput = document.getElementById('prefixInput').value;
-            const baseInput = document.getElementById('baseInput').value;
-            const suffixInput = document.getElementById('suffixInput').value;
-            const useSymbols = document.getElementById('useSymbols').checked;
-            const useNumbers = document.getElementById('useNumbers').checked;
-            const capitalize = document.getElementById('capitalize').checked;
-            
-            const data = nameData[currentCategory];
-            const names = [];
-            
-            // Generate 12 names
-            for (let i = 0; i < 12; i++) {
-                let name = '';
-                
-                // Use custom inputs or random from data
-                const prefix = prefixInput || data.prefixes[Math.floor(Math.random() * data.prefixes.length)];
-                const base = baseInput || data.bases[Math.floor(Math.random() * data.bases.length)];
-                const suffix = suffixInput || data.suffixes[Math.floor(Math.random() * data.suffixes.length)];
-                
-                // Build name
-                if (Math.random() > 0.3) name += prefix;
-                if (name && base) {
-                    const symbol = useSymbols && Math.random() > 0.5 ? data.symbols[Math.floor(Math.random() * data.symbols.length)] : '';
-                    name += symbol + base;
-                } else {
-                    name += base;
-                }
-                
-                if (Math.random() > 0.3 && suffix) {
-                    const symbol = useSymbols && Math.random() > 0.5 ? data.symbols[Math.floor(Math.random() * data.symbols.length)] : '';
-                    name += symbol + suffix;
-                }
-                
-                // Add numbers if enabled
-                if (useNumbers && Math.random() > 0.5) {
-                    name += Math.floor(Math.random() * 100);
-                }
-                
-                // Capitalize if enabled
-                if (capitalize) {
-                    name = name.toUpperCase();
-                }
-                
-                names.push(name);
-            }
-            
-            // Display names
-            names.forEach((name, index) => {
-                const nameCard = createNameCard(name, index);
-                container.appendChild(nameCard);
-            });
-        }
-
-        // Create name card
-        function createNameCard(name, index) {
-            const card = document.createElement('div');
-            card.className = 'name-card bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md slide-in';
-            card.style.animationDelay = `${index * 0.05}s`;
-            
-            const isFavorite = favorites.includes(name);
-            
-            card.innerHTML = `
-                <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-lg font-semibold text-gray-800 dark:text-white">${name}</h4>
-                    <button class="favorite-btn text-red-500 hover:text-red-600 transition-colors" data-name="${name}">
-                        <i class="fas ${isFavorite ? 'fa-heart' : 'fa-heart'} ${isFavorite ? '' : 'far'}"></i>
-                    </button>
-                </div>
-                <div class="flex gap-2">
-                    <button class="copy-btn flex-1 bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700 transition-colors" data-name="${name}">
-                        <i class="fas fa-copy mr-1"></i>Copy
-                    </button>
-                    <button class="regenerate-btn flex-1 bg-gray-600 text-white px-3 py-1 rounded text-sm hover:bg-gray-700 transition-colors" data-index="${index}">
-                        <i class="fas fa-redo mr-1"></i>Regen
-                    </button>
-                </div>
-            `;
-            
-            // Add event listeners
-            card.querySelector('.copy-btn').addEventListener('click', (e) => {
-                copyToClipboard(name);
-            });
-            
-            card.querySelector('.favorite-btn').addEventListener('click', (e) => {
-                toggleFavorite(name, e.currentTarget);
-            });
-            
-            card.querySelector('.regenerate-btn').addEventListener('click', (e) => {
-                regenerateSingleName(parseInt(e.currentTarget.dataset.index));
-            });
-            
-            return card;
-        }
-
-        // Copy to clipboard
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Name copied to clipboard!');
-            });
-        }
-
-        // Show toast notification
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.style.transform = 'translateY(0)';
-            
-            setTimeout(() => {
-                toast.style.transform = 'translateY(100%)';
-            }, 3000);
-        }
-
-        // Toggle favorite
-        function toggleFavorite(name, button) {
-            const index = favorites.indexOf(name);
-            const icon = button.querySelector('i');
-            
-            if (index > -1) {
-                favorites.splice(index, 1);
-                icon.classList.remove('fa-heart');
-                icon.classList.add('far');
-                showToast('Removed from favorites');
-            } else {
-                favorites.push(name);
-                icon.classList.remove('far');
-                icon.classList.add('fa-heart');
-                showToast('Added to favorites');
-            }
-            
-            localStorage.setItem('favoriteNames', JSON.stringify(favorites));
-            updateFavCount();
-        }
-
-        // Update favorite count
-        function updateFavCount() {
-            const favCount = document.getElementById('favCount');
-            if (favorites.length > 0) {
-                favCount.textContent = favorites.length;
-                favCount.classList.remove('hidden');
-            } else {
-                favCount.classList.add('hidden');
-            }
-        }
-
-        // Regenerate single name
-        function regenerateSingleName(index) {
-            const container = document.getElementById('namesContainer');
-            const cards = container.querySelectorAll('.name-card');
-            
-            if (cards[index]) {
-                const data = nameData[currentCategory];
-                let name = '';
-                
-                const prefixInput = document.getElementById('prefixInput').value;
-                const baseInput = document.getElementById('baseInput').value;
-                const suffixInput = document.getElementById('suffixInput').value;
-                const useSymbols = document.getElementById('useSymbols').checked;
-                const useNumbers = document.getElementById('useNumbers').checked;
-                const capitalize = document.getElementById('capitalize').checked;
-                
-                const prefix = prefixInput || data.prefixes[Math.floor(Math.random() * data.prefixes.length)];
-                const base = baseInput || data.bases[Math.floor(Math.random() * data.bases.length)];
-                const suffix = suffixInput || data.suffixes[Math.floor(Math.random() * data.suffixes.length)];
-                
-                if (Math.random() > 0.3) name += prefix;
-                if (name && base) {
-                    const symbol = useSymbols && Math.random() > 0.5 ? data.symbols[Math.floor(Math.random() * data.symbols.length)] : '';
-                    name += symbol + base;
-                } else {
-                    name += base;
-                }
-                
-                if (Math.random() > 0.3 && suffix) {
-                    const symbol = useSymbols && Math.random() > 0.5 ? data.symbols[Math.floor(Math.random() * data.symbols.length)] : '';
-                    name += symbol + suffix;
-                }
-                
-                if (useNumbers && Math.random() > 0.5) {
-                    name += Math.floor(Math.random() * 100);
-                }
-                
-                if (capitalize) {
-                    name = name.toUpperCase();
-                }
-                
-                cards[index].replaceWith(createNameCard(name, index));
-            }
-        }
-
-        // Generate button
-        document.getElementById('generateBtn').addEventListener('click', generateNames);
-
-        // Clear all button
-        document.getElementById('clearAllBtn').addEventListener('click', () => {
-            document.getElementById('namesContainer').innerHTML = '';
-        });
-
-        // Favorites modal
-        const favoritesModal = document.getElementById('favoritesModal');
-        const favoritesBtn = document.getElementById('favoritesBtn');
-        const closeFavorites = document.getElementById('closeFavorites');
-        const favoritesContainer = document.getElementById('favoritesContainer');
-
-        favoritesBtn.addEventListener('click', () => {
-            displayFavorites();
-            favoritesModal.classList.remove('hidden');
-        });
-
-        closeFavorites.addEventListener('click', () => {
-            favoritesModal.classList.add('hidden');
-        });
-
-        favoritesModal.addEventListener('click', (e) => {
-            if (e.target === favoritesModal) {
-                favoritesModal.classList.add('hidden');
-            }
-        });
-
-        function displayFavorites() {
-            favoritesContainer.innerHTML = '';
-            
-            if (favorites.length === 0) {
-                favoritesContainer.innerHTML = '<p class="text-gray-500 text-center py-8">No favorites yet!</p>';
-                return;
-            }
-            
-            favorites.forEach((name, index) => {
-                const favItem = document.createElement('div');
-                favItem.className = 'flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg';
-                favItem.innerHTML = `
-                    <span class="font-medium text-gray-800 dark:text-white">${name}</span>
-                    <div class="flex gap-2">
-                        <button class="copy-fav-btn text-purple-600 hover:text-purple-700" data-name="${name}">
-                            <i class="fas fa-copy"></i>
-                        </button>
-                        <button class="remove-fav-btn text-red-600 hover:text-red-700" data-index="${index}">
-                            <i class="fas fa-trash"></i>
-                        </button>
+            <!-- Home Page -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-center">Home Page</h2>
+                <div class="phone-mockup mx-auto">
+                    <div class="notch"></div>
+                    <div class="phone-screen">
+                        <!-- Header -->
+                        <div class="bg-white p-4 flex justify-between items-center shadow-sm">
+                            <div class="text-2xl font-bold text-purple-600">VideoEarn</div>
+                            <div class="flex space-x-3">
+                                <i class="fas fa-bell text-gray-600"></i>
+                                <i class="fas fa-user-circle text-gray-600"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Hero Section -->
+                        <div class="gradient-bg text-white p-6 text-center">
+                            <h1 class="text-2xl font-bold mb-2">Earn Money Watching Videos</h1>
+                            <p class="mb-6">Watch YouTube videos and earn real money daily!</p>
+                            <div class="flex justify-center space-x-3">
+                                <button class="bg-white text-purple-600 px-6 py-2 rounded-full font-semibold">Sign Up</button>
+                                <button class="bg-transparent border-2 border-white text-white px-6 py-2 rounded-full font-semibold">Login</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Features -->
+                        <div class="p-6">
+                            <div class="grid grid-cols-3 gap-4">
+                                <div class="bg-white p-4 rounded-xl shadow-sm text-center card-hover">
+                                    <i class="fas fa-play-circle text-3xl text-purple-500 mb-2"></i>
+                                    <h3 class="font-semibold">Watch & Earn</h3>
+                                    <p class="text-xs text-gray-500 mt-1">₹5 per video</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl shadow-sm text-center card-hover">
+                                    <i class="fas fa-crown text-3xl text-yellow-500 mb-2"></i>
+                                    <h3 class="font-semibold">Premium</h3>
+                                    <p class="text-xs text-gray-500 mt-1">Unlimited videos</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl shadow-sm text-center card-hover">
+                                    <i class="fas fa-users text-3xl text-green-500 mb-2"></i>
+                                    <h3 class="font-semibold">Referral</h3>
+                                    <p class="text-xs text-gray-500 mt-1">₹50 per friend</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- How It Works -->
+                        <div class="p-6">
+                            <h2 class="text-lg font-bold mb-4">How It Works</h2>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 text-purple-600 w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3">1</div>
+                                    <div>
+                                        <h3 class="font-semibold">Sign Up</h3>
+                                        <p class="text-sm text-gray-600">Create your account with mobile number</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 text-purple-600 w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3">2</div>
+                                    <div>
+                                        <h3 class="font-semibold">Watch Videos</h3>
+                                        <p class="text-sm text-gray-600">Watch YouTube videos to earn money</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div class="bg-purple-100 text-purple-600 w-8 h-8 rounded-full flex items-center justify-center font-bold mr-3">3</div>
+                                    <div>
+                                        <h3 class="font-semibold">Withdraw</h3>
+                                        <p class="text-sm text-gray-600">Withdraw earnings to your bank account</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bottom Navigation -->
+                        <div class="bottom-nav">
+                            <div class="nav-item active">
+                                <i class="fas fa-home"></i>
+                                <span>Home</span>
+                            </div>
+                            <div class="nav-item">
+                                <i class="fas fa-play-circle"></i>
+                                <span>Videos</span>
+                            </div>
+                            <div class="nav-item">
+                                <i class="fas fa-wallet"></i>
+                                <span>Wallet</span>
+                            </div>
+                            <div class="nav-item">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </div>
+                        </div>
                     </div>
-                `;
-                
-                favItem.querySelector('.copy-fav-btn').addEventListener('click', () => {
-                    copyToClipboard(name);
-                });
-                
-                favItem.querySelector('.remove-fav-btn').addEventListener('click', () => {
-                    favorites.splice(index, 1);
-                    localStorage.setItem('favoriteNames', JSON.stringify(favorites));
-                    updateFavCount();
-                    displayFavorites();
-                    showToast('Removed from favorites');
-                });
-                
-                favoritesContainer.appendChild(favItem);
-            });
-        }
-
-        // Initialize
-        generateNames();
-        updateFavCount();
-    </script>
+                </div>
+            </div>
+            
+            <!-- Login Page -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-center">Login Page</h2>
+                <div class="phone-mockup mx-auto">
+                    <div class="notch"></div>
+                    <div class="phone-screen bg-gray-50">
+                        <!-- Header -->
+                        <div class="bg-white p-4 flex items-center shadow-sm">
+                            <i class="fas fa-arrow-left text-gray-600 mr-4"></i>
+                            <h1 class="text-xl font-bold">Login to Your Account</h1>
+                        </div>
+                        
+                        <!-- Login Form -->
+                        <div class="p-6">
+                            <div class="bg-white rounded-2xl shadow-sm p-6">
+                                <div class="text-center mb-8">
+                                    <div class="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                        <i class="fas fa-user text-purple-600 text-3xl"></i>
+                                    </div>
+                                    <h2 class="text-2xl font-bold">Welcome Back SaanVi!</h2>
+                                    <p class="text-gray-500">Login to continue earning</p>
+                                </div>
+                                
+                                <form class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
+                                        <div class="relative">
+                                            <i class="fas fa-phone absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                            <input type="tel" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter your mobile number">
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                                        <div class="relative">
+                                            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                            <input type="password" class="w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Enter your password">
+                                            <i class="fas fa-eye-slash absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 cursor-pointer"></i>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <label class="flex items-center">
+                                            <input type="checkbox" class="rounded text-purple-600 focus:ring-purple-500">
+                                            <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                                        </label>
+                                        <a href="#" class="text-sm text-purple-600 hover:underline">Forgot Password?</a>
+                                    </div>
+                                    
+                                    <button class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">Login</button>
+                                </form>
+                                
+                                <div class="mt-6 text-center">
+                                    <p class="text-gray-600">Don't have an account? <a href="#" class="text-purple-600 font-semibold hover:underline">Sign Up</a></p>
+                                </div>
+                                
+                                <div class="mt-6">
+                                    <div class="relative">
+                                        <div class="absolute inset-0 flex items-center">
+                                            <div class="w-full border-t border-gray-300"></div>
+                                        </div>
+                                        <div class="relative flex justify-center text-sm">
+                                            <span class="px-2 bg-gray-50 text-gray-500">Or continue with</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-6 grid grid-cols-2 gap-3">
+                                        <button class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                            <i class="fab fa-google text-red-500 mr-2"></i>
+                                            Google
+                                        </button>
+                                        <button class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                            <i class="fab fa-facebook text-blue-600 mr-2"></i>
+                                            Facebook
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Dashboard Page -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-center">Dashboard</h2>
+                <div class="phone-mockup mx-auto">
+                    <div class="notch"></div>
+                    <div class="phone-screen bg-gray-50">
+                        <!-- Header -->
+                        <div class="bg-white p-4 shadow-sm">
+                            <div class="flex justify-between items-center mb-2">
+                                <h1 class="text-xl font-bold">Video Dashboard</h1>
+                                <div class="relative">
+                                    <i class="fas fa-bell text-gray-600"></i>
+                                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-sm text-gray-500">Available Balance</p>
+                                    <p class="text-2xl font-bold text-purple-600">₹1,250.00</p>
+                                </div>
+                                <div class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold">
+                                    Premium
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats -->
+                        <div class="p-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-white p-4 rounded-xl shadow-sm">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-sm text-gray-500">Today's Earnings</p>
+                                            <p class="text-xl font-bold">₹25.00</p>
+                                        </div>
+                                        <i class="fas fa-chart-line text-green-500"></i>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl shadow-sm">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-sm text-gray-500">Videos Watched</p>
+                                            <p class="text-xl font-bold">5/10</p>
+                                        </div>
+                                        <i class="fas fa-play-circle text-purple-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Video Section -->
+                        <div class="p-4">
+                            <h2 class="text-lg font-bold mb-4">Watch & Earn</h2>
+                            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                                <div class="relative">
+                                    <img src="https://via.placeholder.com/375x200" alt="Video thumbnail" class="w-full h-48 object-cover">
+                                    <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                                        <div class="bg-white bg-opacity-90 w-16 h-16 rounded-full flex items-center justify-center">
+                                            <i class="fas fa-play text-purple-600 text-2xl ml-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold mb-1">How to Earn Money Online</h3>
+                                    <p class="text-sm text-gray-600 mb-3">Watch this video to earn ₹5</p>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-xs text-gray-500">Duration: 10:25</span>
+                                        <button class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm font-semibold">Watch Now</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Quick Actions -->
+                        <div class="p-4">
+                            <h2 class="text-lg font-bold mb-4">Quick Actions</h2>
+                            <div class="grid grid-cols-4 gap-3">
+                                <div class="bg-white p-3 rounded-xl shadow-sm text-center">
+                                    <i class="fas fa-wallet text-purple-500 text-xl mb-1"></i>
+                                    <p class="text-xs">Deposit</p>
+                                </div>
+                                <div class="bg-white p-3 rounded-xl shadow-sm text-center">
+                                    <i class="fas fa-money-bill-wave text-green-500 text-xl mb-1"></i>
+                                    <p class="text-xs">Withdraw</p>
+                                </div>
+                                <div class="bg-white p-3 rounded-xl shadow-sm text-center">
+                                    <i class="fas fa-user-plus text-blue-500 text-xl mb-1"></i>
+                                    <p class="text-xs">Refer</p>
+                                </div>
+                                <div class="bg-white p-3 rounded-xl shadow-sm text-center">
+                                    <i class="fas fa-crown text-yellow-500 text-xl mb-1"></i>
+                                    <p class="text-xs">Premium</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bottom Navigation -->
+                        <div class="bottom-nav">
+                            <div class="nav-item">
+                                <i class="fas fa-home"></i>
+                                <span>Home</span>
+                            </div>
+                            <div class="nav-item active">
+                                <i class="fas fa-play-circle"></i>
+                                <span>Videos</span>
+                            </div>
+                            <div class="nav-item">
+                                <i class="fas fa-wallet"></i>
+                                <span>Wallet</span>
+                            </div>
+                            <div class="nav-item">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Premium Page -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-center">Premium Page</h2>
+                <div class="phone-mockup mx-auto">
+                    <div class="notch"></div>
+                    <div class="phone-screen bg-gray-50">
+                        <!-- Header -->
+                        <div class="bg-white p-4 flex items-center shadow-sm">
+                            <i class="fas fa-arrow-left text-gray-600 mr-4"></i>
+                            <h1 class="text-xl font-bold">Premium Membership</h1>
+                        </div>
+                        
+                        <!-- Premium Content -->
+                        <div class="p-6">
+                            <div class="text-center mb-6">
+                                <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-crown text-white text-4xl"></i>
+                                </div>
+                                <h2 class="text-2xl font-bold mb-2">Unlock Premium</h2>
+                                <p class="text-gray-600">Get unlimited access to all features</p>
+                            </div>
+                            
+                            <!-- Pricing Card -->
+                            <div class="bg-gradient-to-br from-purple-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg mb-6">
+                                <div class="text-center mb-4">
+                                    <p class="text-sm opacity-80">One-time Payment</p>
+                                    <p class="text-4xl font-bold">₹199</p>
+                                    <p class="text-sm opacity-80">Lifetime Access</p>
+                                </div>
+                                
+                                <div class="space-y-3 mb-6">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle mr-3"></i>
+                                        <span>Unlimited video watching</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle mr-3"></i>
+                                        <span>Higher earning rates</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle mr-3"></i>
+                                        <span>Priority withdrawal</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle mr-3"></i>
+                                        <span>Exclusive videos</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle mr-3"></i>
+                                        <span>24/7 support</span>
+                                    </div>
+                                </div>
+                                
+                                <button class="w-full bg-white text-purple-600 py-3 rounded-lg font-bold hover:bg-gray-100 transition duration-300">
+                                    Upgrade Now
+                                </button>
+                            </div>
+                            
+                            <!-- Testimonials -->
+                            <div>
+                                <h3 class="text-lg font-bold mb-4">What Our Users Say</h3>
+                                <div class="bg-white rounded-xl p-4 shadow-sm mb-3">
+                                    <div class="flex items-center mb-2">
+                                        <img src="https://via.placeholder.com/40" alt="User" class="w-10 h-10 rounded-full mr-3">
+                                        <div>
+                                            <p class="font-semibold">Rahul Sharma</p>
+                                            <div class="flex text-yellow-400 text-xs">
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                                <i class="fas fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-gray-600">"Premium membership totally worth it! I earned 3x more after upgrading."</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Referral Page -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-center">Referral Page</h2>
+                <div class="phone-mockup mx-auto">
+                    <div class="notch"></div>
+                    <div class="phone-screen bg-gray-50">
+                        <!-- Header -->
+                        <div class="bg-white p-4 flex items-center shadow-sm">
+                            <i class="fas fa-arrow-left text-gray-600 mr-4"></i>
+                            <h1 class="text-xl font-bold">Referral Program</h1>
+                        </div>
+                        
+                        <!-- Referral Content -->
+                        <div class="p-6">
+                            <div class="bg-gradient-to-r from-green-500 to-teal-600 rounded-2xl p-6 text-white text-center mb-6">
+                                <i class="fas fa-gift text-4xl mb-3"></i>
+                                <h2 class="text-2xl font-bold mb-2">Earn ₹50 Per Referral</h2>
+                                <p>Invite friends and earn rewards when they join</p>
+                            </div>
+                            
+                            <!-- Referral Code -->
+                            <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+                                <h3 class="font-bold mb-3">Your Referral Code</h3>
+                                <div class="bg-gray-100 rounded-lg p-4 flex justify-between items-center mb-3">
+                                    <span class="font-mono text-lg font-bold">VIDE50</span>
+                                    <button class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold">
+                                        <i class="fas fa-copy mr-1"></i> Copy
+                                    </button>
+                                </div>
+                                <p class="text-sm text-gray-600">Share this code with your friends</p>
+                            </div>
+                            
+                            <!-- Share Options -->
+                            <div class="bg-white rounded-xl p-6 shadow-sm mb-6">
+                                <h3 class="font-bold mb-3">Share With Friends</h3>
+                                <div class="grid grid-cols-4 gap-3">
+                                    <button class="bg-blue-100 text-blue-600 p-3 rounded-lg">
+                                        <i class="fab fa-facebook-f text-xl"></i>
+                                    </button>
+                                    <button class="bg-blue-100 text-blue-400 p-3 rounded-lg">
+                                        <i class="fab fa-twitter text-xl"></i>
+                                    </button>
+                                    <button class="bg-green-100 text-green-600 p-3 rounded-lg">
+                                        <i class="fab fa-whatsapp text-xl"></i>
+                                    </button>
+                                    <button class="bg-gray-100 text-gray-600 p-3 rounded-lg">
+                                        <i class="fas fa-link text-xl"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Stats -->
+                            <div class="bg-white rounded-xl p-6 shadow-sm">
+                                <h3 class="font-bold mb-4">Your Referral Stats</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div class="bg-purple-50 rounded-lg p-4 text-center">
+                                        <p class="text-2xl font-bold text-purple-600">12</p>
+                                        <p class="text-sm text-gray-600">Total Referrals</p>
+                                    </div>
+                                    <div class="bg-green-50 rounded-lg p-4 text-center">
+                                        <p class="text-2xl font-bold text-green-600">₹600</p>
+                                        <p class="text-sm text-gray-600">Total Earnings</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bottom Navigation -->
+                        <div class="bottom-nav">
+                            <div class="nav-item">
+                                <i class="fas fa-home"></i>
+                                <span>Home</span>
+                            </div>
+                            <div class="nav-item">
+                                <i class="fas fa-play-circle"></i>
+                                <span>Videos</span>
+                            </div>
+                            <div class="nav-item">
+                                <i class="fas fa-wallet"></i>
+                                <span>Wallet</span>
+                            </div>
+                            <div class="nav-item active">
+                                <i class="fas fa-user"></i>
+                                <span>Profile</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Admin Dashboard -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4 text-center">Admin Dashboard</h2>
+                <div class="phone-mockup mx-auto">
+                    <div class="notch"></div>
+                    <div class="phone-screen bg-gray-50">
+                        <!-- Header -->
+                        <div class="bg-white p-4 shadow-sm">
+                            <div class="flex justify-between items-center">
+                                <h1 class="text-xl font-bold">Admin Panel</h1>
+                                <div class="flex items-center">
+                                    <i class="fas fa-bell text-gray-600 mr-3"></i>
+                                    <img src="https://via.placeholder.com/32" alt="Admin" class="w-8 h-8 rounded-full">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats Cards -->
+                        <div class="p-4">
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="bg-white p-4 rounded-xl shadow-sm">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <i class="fas fa-users text-blue-500 text-xl"></i>
+                                        <span class="text-xs text-green-500 bg-green-100 px-2 py-1 rounded-full">+12%</span>
+                                    </div>
+                                    <p class="text-2xl font-bold">1,245</p>
+                                    <p class="text-sm text-gray-500">Total Users</p>
+                                </div>
+                                <div class="bg-white p-4 rounded-xl shadow-sm">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <i class="fas fa-money-bill-wave text-green-500 text-xl"></i>
+                                        <span class="text-xs text-green-500 bg-green-100 px-2 py-1 rounded-full">+8%</span>
+                                    </div>
+                                    <p class="text-2xl font-bold">₹45,230</p>
+                                    <p class="text-sm text-gray-500">Total Revenue</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Tabs -->
+                            <div class="flex border-b border-gray-200 mb-4">
+                                <button class="px-4 py-2 font-medium text-sm text-purple-600 border-b-2 border-purple-600">Users</button>
+                                <button class="px-4 py-2 font-medium text-sm text-gray-500 hover:text-gray-700">Withdrawals</button>
+                                <button class="px-4 py-2 font-medium text-sm text-gray-500 hover:text-gray-700">Deposits</button>
+                            </div>
+                            
+                            <!-- Users Table -->
+                            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                                <div class="p-4 border-b border-gray-200">
+                                    <div class="flex justify-between items-center">
+                                        <h3 class="font-semibold">Recent Users</h3>
+                                        <button class="text-purple-600 text-sm font-medium">View All</button>
+                                    </div>
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="text-left p-3 text-xs font-medium text-gray-500 uppercase">User</th>
+                                                <th class="text-left p-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                                                <th class="text-left p-3 text-xs font-medium text-gray-500 uppercase">Joined</th>
+                                                <th class="text-left p-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="p-3">
+                                                    <div class="flex items-center">
+                                                        <img src="https://via.placeholder.com/32" alt="User" class="w-8 h-8 rounded-full mr-3">
+                                                        <div>
+                                                            <p class="font-medium">Rahul Sharma</p>
+                                                            <p class="text-xs text-gray-500">+91 9876543210</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="p-3">
+                                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Active</span>
+                                                </td>
+                                                <td class="p-3 text-sm text-gray-500">2 days ago</td>
+                                                <td class="p-3">
+                                                    <button class="text-gray-400 hover:text-gray-600">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3">
+                                                    <div class="flex items-center">
+                                                        <img src="https://via.placeholder.com/32" alt="User" class="w-8 h-8 rounded-full mr-3">
+                                                        <div>
+                                                            <p class="font-medium">Priya Patel</p>
+                                                            <p class="text-xs text-gray-500">+91 9123456789</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="p-3">
+                                                    <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Active</span>
+                                                </td>
+                                                <td class="p-3 text-sm text-gray-500">5 days ago</td>
+                                                <td class="p-3">
+                                                    <button class="text-gray-400 hover:text-gray-600">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
 </body>
 </html>
